@@ -2,12 +2,18 @@ package estest;
 
 import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.get.GetResponse;
+import org.elasticsearch.action.get.MultiGetItemResponse;
+import org.elasticsearch.action.get.MultiGetResponse;
+import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.index.IndexResponse;
+import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
-import org.elasticsearch.common.xcontent.XContentFactory;
+import org.elasticsearch.common.xcontent.XContentBuilder;
+import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
+import org.joda.time.DateTime;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -27,7 +33,43 @@ public class BaseDemo {
 //        updateDocument(client);
         deleteDocument(client);
 //        client.close();
+//        test(client);
     }
+
+    private static void test(TransportClient client) throws IOException {
+        XContentBuilder factory=jsonBuilder().startObject()
+                .field("user","zhangshan")
+                .field("birthday",new DateTime())
+                .field("age",22)
+                .endObject();
+
+        /**
+         * 如果文档不存在，upsert元素的内容将用于添加新文档，如果存在则更新
+         */
+        IndexRequest indexRequest=new IndexRequest();
+        UpdateRequest updateRequest=new UpdateRequest("index","type","1")
+                .doc(jsonBuilder()
+                        .startObject()
+                        .field("name","zhangsan")
+                        .endObject())
+                .upsert(indexRequest);
+
+        /**
+         * MultiGet响应，可以索引和类型不一致
+         */
+        MultiGetResponse multiGetItemResponses=client.prepareMultiGet()
+                .add("twitter", "tweet", "1")
+                .add("twitter", "tweet", "2", "3", "4")
+                .add("another", "type", "foo")
+                .get();
+        for (MultiGetItemResponse itemResponse : multiGetItemResponses) {
+            GetResponse response = itemResponse.getResponse();
+            if (response.isExists()) {
+                String json = response.getSourceAsString();
+            }
+        }
+    }
+
 //删除文档
     private static void deleteDocument(TransportClient client) {
         DeleteResponse response=client.prepareDelete("index","type","1").get();
@@ -53,16 +95,25 @@ public class BaseDemo {
 
     //    创建索引
     private static void createIndexByKey(TransportClient client) throws IOException {
-        IndexResponse response=client.prepareIndex("index","type","1")
-                .setSource(jsonBuilder()
-//                        .setSource(XContentFactory.jsonBuilder()
-                        .startObject()
-                        .field("user","kimchy")
-                        .field("postDate",new Date())
-                        .field("message","try out Elasticsearch")
-                        .endObject()
-                ).get();
+//        IndexResponse response=client.prepareIndex("index","type","1")
+////                        .setSource(XContentFactory.jsonBuilder()
+//                .setSource(jsonBuilder()
+//                        .startObject()
+//                        .field("user","kimchy")
+//                        .field("postDate",new Date())
+//                        .field("message","try out Elasticsearch")
+//                        .endObject()
+//                ).get();
 
+
+//        上述创建索引也可以写成JSON格式
+        String json = "{" +
+                "\"user\":\"kimchy\"," +
+                "\"postDate\":\"2013-01-30\"," +
+                "\"message\":\"trying out Elasticsearch\"" +
+                "}";
+        IndexResponse response=client.prepareIndex("index","type")
+                .setSource(json, XContentType.JSON).get();
 
     }
 }

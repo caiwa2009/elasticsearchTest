@@ -1,6 +1,5 @@
 package estest;
 
-import org.apache.logging.log4j.core.config.properties.PropertiesConfiguration;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
@@ -10,8 +9,6 @@ import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
 
 import java.net.InetAddress;
-import java.util.ArrayList;
-import java.util.List;
 
 public class EmployeeCRUD {
     public static void main(String[] args) throws Exception {
