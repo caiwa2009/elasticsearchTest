@@ -9,7 +9,7 @@ import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.common.transport.TransportAddress;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
@@ -17,7 +17,6 @@ import org.joda.time.DateTime;
 
 import java.io.IOException;
 import java.net.InetAddress;
-import java.util.Date;
 
 import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
 
@@ -25,9 +24,9 @@ public class BaseDemo {
     public static void main(String[] args) throws IOException {
         //如果设置了集群则需要添加集群的名称
         Settings settings=Settings.builder().put("cluster.name","elasticsearch").build();
-//        TransportClient client=new PreBuiltTransportClient(settings);
+        //        TransportClient client=new PreBuiltTransportClient(settings);
         TransportClient client=new PreBuiltTransportClient(settings)
-                .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("localhost"),9300));
+                .addTransportAddress(new TransportAddress(InetAddress.getByName("localhost"),9300));
 //        createIndexByKey(client);
 //        queryDocument(client);
 //        updateDocument(client);
