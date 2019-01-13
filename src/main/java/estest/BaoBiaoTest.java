@@ -2,7 +2,7 @@ package estest;
 
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.transport.TransportAddress;
+import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
 
 import java.net.InetAddress;
@@ -13,7 +13,7 @@ public class BaoBiaoTest {
         Settings settings=Settings.builder().put("cluster.name","elasticsearch").build();
         //        TransportClient client=new PreBuiltTransportClient(settings);
         TransportClient client=new PreBuiltTransportClient(settings)
-                .addTransportAddress(new TransportAddress(InetAddress.getByName("localhost"),9300));
+                .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("localhost"),9300));
         test(client);
     }
 

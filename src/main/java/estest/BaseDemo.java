@@ -9,7 +9,7 @@ import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.transport.TransportAddress;
+import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
@@ -26,17 +26,24 @@ public class BaseDemo {
         Settings settings=Settings.builder().put("cluster.name","elasticsearch").build();
         //        TransportClient client=new PreBuiltTransportClient(settings);
         TransportClient client=new PreBuiltTransportClient(settings)
-                .addTransportAddress(new TransportAddress(InetAddress.getByName("localhost"),9300));
+                .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("localhost"),9300));
 //        createIndexByKey(client);
 //        queryDocument(client);
 //        updateDocument(client);
-        deleteDocument(client);
+//        deleteDocument(client);
 //        client.close();
+//        multiGetTest
 //        test(client);
     }
 
-    private static void test(TransportClient client) throws IOException {
-        XContentBuilder factory=jsonBuilder().startObject()
+    private static void test(TransportClient client){
+
+
+
+    }
+
+    private static void multiGetTest(TransportClient client) throws IOException {
+        XContentBuilder jsonbuild=jsonBuilder().startObject()
                 .field("user","zhangshan")
                 .field("birthday",new DateTime())
                 .field("age",22)
@@ -92,7 +99,7 @@ public class BaseDemo {
         System.out.println(response);
     }
 
-    //    创建索引
+    //    创建索引，文档有java和json两种写法
     private static void createIndexByKey(TransportClient client) throws IOException {
 //        IndexResponse response=client.prepareIndex("index","type","1")
 ////                        .setSource(XContentFactory.jsonBuilder()
