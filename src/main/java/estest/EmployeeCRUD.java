@@ -1,6 +1,7 @@
 package estest;
 
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.action.support.IndicesOptions;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
@@ -27,11 +28,13 @@ public class EmployeeCRUD {
 //    查询员工列表中position中含有technique年龄在30到40之间，分页查询
     private static void employeeQuery(TransportClient client) {
         SearchResponse response=client.prepareSearch("company")
+//                设置索引，忽略忽略不可用的true，允许没有索引的true
+                .setIndicesOptions(IndicesOptions.fromOptions(true,true,true,false))
                 .setTypes("employee").setVersion(true)
                 .setQuery(QueryBuilders.matchPhraseQuery("position","technique"))
 //                .setQuery(QueryBuilders.rangeQuery("age").from(30).to(40))
                 .setPostFilter(QueryBuilders.rangeQuery("age").from(30).to(40))
-//                .setFrom(0).setSize(1)
+                .setFrom(0).setSize(1)
                 .get();
 //        response.get
         SearchHit[] hits = response.getHits().getHits();
